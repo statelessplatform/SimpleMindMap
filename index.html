@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Map Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header with theme toggle and guide -->
+    <header class="app-header">
+        <h1 class="app-title">🗺️ Mind Map Generator</h1>
+        <div class="header-actions">
+            <button class="btn-icon" data-action="guide" aria-label="Open user guide" title="How to use">❓</button>
+            <button class="btn-icon" data-action="theme" aria-label="Toggle theme" title="Change theme">🌙</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="app-main">
+        <!-- Input Section -->
+        <section class="section-input" aria-label="Task input area">
+            <div class="input-header">
+                <h2 class="section-title">📝 Enter Your Tasks</h2>
+                <span class="input-hint">Indent with 2 spaces for subtasks</span>
+            </div>
+            <textarea 
+                class="task-input" 
+                data-input="tasks"
+                placeholder="Design homepage&#10;  Create wireframe&#10;  Design mockup&#10;  Get feedback&#10;Code backend API&#10;  Set up database&#10;  Create endpoints&#10;Test features&#10;  Unit testing&#10;  Integration testing&#10;Deploy application"
+                rows="10"
+                aria-label="Task input textarea"
+            ></textarea>
+            <div class="input-actions">
+                <button class="btn-primary" data-action="generate" aria-label="Generate mind map">
+                    🚀 Generate Mind Map
+                </button>
+                <button class="btn-secondary" data-action="clear" aria-label="Clear all tasks">
+                    🗑️ Clear
+                </button>
+            </div>
+        </section>
+
+        <!-- Visualization Section -->
+        <section class="section-visualization" aria-label="Mind map visualization area">
+            <div class="viz-header">
+                <h2 class="section-title">🎨 Mind Map Visualization</h2>
+                <div class="viz-controls">
+                    <label class="control-label">
+                        <input type="checkbox" data-option="autoGroup" checked aria-label="Auto-group tasks">
+                        Auto-group by keywords
+                    </label>
+                    <select class="control-select" data-option="layout" aria-label="Select layout type">
+                        <option value="hierarchical">Hierarchical</option>
+                        <option value="radial">Radial</option>
+                        <option value="force">Force-directed</option>
+                    </select>
+                </div>
+            </div>
+            <div class="canvas-container">
+                <div id="network" class="network-canvas" role="img" aria-label="Interactive mind map"></div>
+                <div class="canvas-overlay" data-state="empty">
+                    <div class="overlay-content">
+                        <span class="overlay-icon">💡</span>
+                        <p class="overlay-text">Enter tasks above and click "Generate Mind Map" to visualize your workflow</p>
+                    </div>
+                </div>
+            </div>
+            <div class="viz-actions">
+                <button class="btn-secondary" data-action="fit" aria-label="Fit view to diagram" disabled>
+                    🔍 Fit View
+                </button>
+                <button class="btn-secondary" data-action="exportSVG" aria-label="Export as SVG" disabled>
+                    📄 Export SVG
+                </button>
+                <button class="btn-secondary" data-action="exportPNG" aria-label="Export as PNG" disabled>
+                    🖼️ Export PNG
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- User Guide Modal -->
+    <dialog class="guide-modal" data-modal="guide">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">❓ How to Use Mind Map Generator</h2>
+                <button class="btn-close" data-action="closeGuide" aria-label="Close guide">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="guide-step">
+                    <span class="step-number">1</span>
+                    <div class="step-content">
+                        <h3>Enter Your Tasks</h3>
+                        <p>Type tasks one per line. Use indentation (2 spaces or 1 tab) to create subtasks under main tasks. This creates a hierarchical structure.</p>
+                    </div>
+                </div>
+                <div class="guide-step">
+                    <span class="step-number">2</span>
+                    <div class="step-content">
+                        <h3>Create Subtasks with Indentation</h3>
+                        <p><strong>Example:</strong><br>
+                        Design homepage<br>
+                        &nbsp;&nbsp;Create wireframe<br>
+                        &nbsp;&nbsp;Design mockup<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Choose colors<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Select fonts<br>
+                        Code backend<br>
+                        &nbsp;&nbsp;Set up database</p>
+                    </div>
+                </div>
+                <div class="guide-step">
+                    <span class="step-number">3</span>
+                    <div class="step-content">
+                        <h3>Generate & Customize</h3>
+                        <p>Click "Generate Mind Map" to create your diagram. Parent tasks appear as bold circles, subtasks as boxes. Toggle auto-grouping to organize by keywords (design, code, test).</p>
+                    </div>
+                </div>
+                <div class="guide-step">
+                    <span class="step-number">4</span>
+                    <div class="step-content">
+                        <h3>Interact & Export</h3>
+                        <p>Drag nodes to rearrange, zoom with scroll wheel, pan by dragging. Switch layouts (Hierarchical, Radial, Force). Export as SVG (vector) or PNG (image).</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" data-action="closeGuide">Got it! 👍</button>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Progress Indicator -->
+    <div class="progress-indicator" data-state="hidden" role="status" aria-live="polite">
+        <div class="progress-spinner"></div>
+        <p class="progress-text">Processing your tasks...</p>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" aria-live="assertive" aria-atomic="true"></div>
+
+    <!-- Vis.js Network Library - loaded from CDN -->
+    <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
