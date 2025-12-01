@@ -1,0 +1,18 @@
+{
+  "name": "Offline Mind Map",
+  "short_name": "MindMap",
+  "description": "A secure, offline-first mind map generator.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#219ebc",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
